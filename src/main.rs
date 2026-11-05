@@ -1,5 +1,6 @@
 use crate::{
     layer::Layer,
+    network::NeuralNetwork,
     neuron::{ActivationFnKind, Neuron, TransferFnKind},
 };
 
@@ -26,4 +27,10 @@ fn main() {
     println!("Neuron 2: {:?}\nApplication: {:?}", n2, n2.apply(&inputs));
     let l = Layer::new(vec![n1, n2]);
     println!("Layer: {:?}\nApplication: {:?}", l, l.apply(&inputs));
+    let nn = NeuralNetwork::new(vec![l]);
+    println!(
+        "Neural Network: {:?}\nApplication: {:?}",
+        nn,
+        nn.apply(inputs)
+    );
 }

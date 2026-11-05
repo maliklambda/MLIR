@@ -34,6 +34,11 @@ impl Layer {
     }
 
     /// Applies an input to each neuron to yield a vector of outputs.
+    /// For a dense-connected-layer:
+    ///     - layer-input-len == number-of-weights-per-neuron
+    ///     . layer-output-len == number-of-neurons
+    /// The length of the output vector is determined by the number of neurons inside the layer
+    ///  -> len(self.neurons) = len(output)
     pub fn apply(&self, shared_inputs: &[f32]) -> Vec<f32> {
         assert_eq!(
             shared_inputs.len(),

@@ -44,6 +44,8 @@ impl Neuron {
     }
 
     /// Applies an input to the neuron and returns the resulting output.
+    ///
+    /// inputs.len() must be equal to weights.len() to enable the most simple input-weight-mapping.
     pub fn apply(&self, inputs: &[f32]) -> f32 {
         assert_eq!(
             inputs.len(),
@@ -60,7 +62,6 @@ impl Neuron {
         (self.activation_fn)(transfer_value, self.bias)
     }
 }
-
 
 #[test]
 #[should_panic(expected = "Length missmatch for inputs & weights in neuron-application.")]
