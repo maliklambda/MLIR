@@ -1,7 +1,11 @@
-use crate::{layer::Layer, neuron::{ActivationFnKind, Neuron, TransferFnKind, WeightedInput}};
+use crate::{
+    layer::Layer,
+    neuron::{ActivationFnKind, Neuron, TransferFnKind, WeightedInput},
+};
 
-pub mod neuron;
 pub mod layer;
+pub mod network;
+pub mod neuron;
 
 fn main() {
     let inputs: Vec<WeightedInput> =
@@ -19,6 +23,6 @@ fn main() {
     );
     println!("Neuron 1: {:?}\nApplication: {:?}", n1, n1.apply(&inputs));
     println!("Neuron 2: {:?}\nApplication: {:?}", n2, n2.apply(&inputs));
-    let l = Layer::new(&inputs, vec![n1,n2]);
-    println!("Layer: {:?}\nApplication: {:?}", l, l.apply());
+    let l = Layer::new(vec![n1, n2]);
+    println!("Layer: {:?}\nApplication: {:?}", l, l.apply(&inputs));
 }
