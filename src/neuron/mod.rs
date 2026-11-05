@@ -8,11 +8,8 @@ mod activation;
 mod input;
 mod transfer;
 
-#[derive(Debug)]
-pub struct Neuron<'w> {
-    /// Inputs to the neuron
-    pub inputs: &'w [WeightedInput],
-
+#[derive(Debug, Clone)]
+pub struct Neuron {
     /// Channels the inputs into a single value.
     /// Produces the transfer-value.
     /// Commonly used: Weighted Sum
@@ -28,24 +25,22 @@ pub struct Neuron<'w> {
     pub bias: f32,
 }
 
-impl<'w> Neuron<'w> {
+impl Neuron {
     pub fn new(
-        inputs: &'w [WeightedInput],
         transfer_fn: &dyn Transferable,
         activation_fn: &dyn Activationalbe,
         bias: f32,
     ) -> Self {
         Self {
-            inputs,
             transfer_fn: transfer_fn.to_transfer_fn(),
             activation_fn: activation_fn.to_activation_fn(),
             bias,
         }
     }
 
-    /// Applies the neuron's input and produces the output.
-    pub fn apply(&self) -> f32 {
-        let transfer_value = (self.transfer_fn)(self.inputs);
+    /// Applies an input to the neuron and returns the resulting output.
+    pub fn apply(&self, inputs: &[WeightedInput]) -> f32 {
+        let transfer_value = (self.transfer_fn)(inputs);
         (self.activation_fn)(transfer_value, self.bias)
     }
 }
