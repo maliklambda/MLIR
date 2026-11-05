@@ -1,21 +1,45 @@
-use crate::neuron::{Neuron, WeightedInput};
+use crate::neuron::Neuron;
 
 /// A single layer of a neural network.
 #[derive(Debug, Clone)]
 pub struct Layer {
     /// All neurons of the layer.
     pub neurons: Vec<Neuron>,
+
+    /// Store the length of the weight of all neurons' weigths
+    pub weights_len: usize,
 }
 
 impl Layer {
     /// Builds a layer from a Vec of neurons.
     /// Sets the inputs of every neuron to the shared-inputs.
     pub fn new(neurons: Vec<Neuron>) -> Self {
-        Self { neurons }
+        assert!(
+            !neurons.is_empty(),
+            "Cannot build layer from empty neurons-vector."
+        );
+        let weights_len = neurons.first().unwrap().weights.len();
+        // Assert that all neurons' weights are of the same length
+        neurons.iter().for_each(|n| {
+            assert_eq!(
+                n.weights.len(),
+                weights_len,
+                "Cannot build layer with neurons with weights of different lengths"
+            )
+        });
+        Self {
+            neurons,
+            weights_len,
+        }
     }
 
     /// Applies an input to each neuron to yield a vector of outputs.
-    pub fn apply(&self, shared_inputs: &[WeightedInput]) -> Vec<f32> {
+    pub fn apply(&self, shared_inputs: &[f32]) -> Vec<f32> {
+        assert_eq!(
+            shared_inputs.len(),
+            self.weights_len,
+            "Length missmatch for inputs & weights in layer-application."
+        );
         self.neurons
             .iter()
             .map(|n| n.apply(shared_inputs))
