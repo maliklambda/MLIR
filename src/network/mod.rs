@@ -1,13 +1,13 @@
-use crate::layer::Layer;
+use crate::layer::Layerable;
 
 /// The l1.neurons.len() must be equal to l2.weights_len
-#[derive(Debug, Clone)]
-pub struct NeuralNetwork {
-    layers: Vec<Layer>,
+#[derive(Debug)]
+pub struct NeuralNetwork<'a> {
+    layers: Vec<&'a dyn Layerable>,
 }
 
-impl NeuralNetwork {
-    pub fn new(layers: Vec<Layer>) -> Self {
+impl <'a> NeuralNetwork <'a> {
+    pub fn new(layers: Vec<&'a dyn Layerable>) -> Self {
         Self { layers }
     }
 
@@ -16,6 +16,7 @@ impl NeuralNetwork {
         let mut last_output = inputs;
         for layer in &self.layers {
             last_output = layer.apply(&last_output);
+            println!("Last output: {:?}", last_output);
         }
         last_output
     }

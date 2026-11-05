@@ -1,53 +1,20 @@
-use crate::neuron::Neuron;
+mod dense;
+mod convolutional;
+pub use dense::DenseLayer;
 
-/// A single layer of a neural network.
-#[derive(Debug, Clone)]
-pub struct Layer {
-    /// All neurons of the layer.
-    pub neurons: Vec<Neuron>,
 
-    /// Store the length of the weight of all neurons' weigths
-    pub weights_len: usize,
+/// The trait for layers of a neural network
+pub trait Layerable: std::fmt::Debug {
+    fn apply(&self, shared_inputs: &[f32]) -> Vec<f32>;
 }
 
-impl Layer {
-    /// Builds a layer from a Vec of neurons.
-    /// Sets the inputs of every neuron to the shared-inputs.
-    pub fn new(neurons: Vec<Neuron>) -> Self {
-        assert!(
-            !neurons.is_empty(),
-            "Cannot build layer from empty neurons-vector."
-        );
-        let weights_len = neurons.first().unwrap().weights.len();
-        // Assert that all neurons' weights are of the same length
-        neurons.iter().for_each(|n| {
-            assert_eq!(
-                n.weights.len(),
-                weights_len,
-                "Cannot build layer with neurons with weights of different lengths"
-            )
-        });
-        Self {
-            neurons,
-            weights_len,
-        }
-    }
 
-    /// Applies an input to each neuron to yield a vector of outputs.
-    /// For a dense-connected-layer:
-    ///     - layer-input-len == number-of-weights-per-neuron
-    ///     . layer-output-len == number-of-neurons
-    /// The length of the output vector is determined by the number of neurons inside the layer
-    ///  -> len(self.neurons) = len(output)
-    pub fn apply(&self, shared_inputs: &[f32]) -> Vec<f32> {
-        assert_eq!(
-            shared_inputs.len(),
-            self.weights_len,
-            "Length missmatch for inputs & weights in layer-application."
-        );
-        self.neurons
-            .iter()
-            .map(|n| n.apply(shared_inputs))
-            .collect()
-    }
+#[derive(Debug, Clone)]
+pub enum LayerKind {
+    /// Dense layers map every output neuron to every input neuron.
+    /// -> One-to-one mapping between input- and output-neurons.
+    Dense,
+
+    /// Convolutional layers apply filters ("kernels") over the input to extract patterns/features.
+    Convolutional,
 }

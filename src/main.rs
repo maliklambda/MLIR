@@ -1,7 +1,5 @@
 use crate::{
-    layer::Layer,
-    network::NeuralNetwork,
-    neuron::{ActivationFnKind, Neuron, TransferFnKind},
+    layer::{DenseLayer, Layerable}, network::NeuralNetwork, neuron::{ActivationFnKind, Neuron, TransferFnKind},
 };
 
 pub mod layer;
@@ -14,7 +12,7 @@ fn main() {
     let n1 = Neuron::new(
         &TransferFnKind::WeightedSum,
         &ActivationFnKind::StepFn,
-        vec![0.5, -1.3],
+        vec![0.5, 1.3],
         bias,
     );
     let n2 = Neuron::new(
@@ -25,9 +23,11 @@ fn main() {
     );
     println!("Neuron 1: {:?}\nApplication: {:?}", n1, n1.apply(&inputs));
     println!("Neuron 2: {:?}\nApplication: {:?}", n2, n2.apply(&inputs));
-    let l = Layer::new(vec![n1, n2]);
-    println!("Layer: {:?}\nApplication: {:?}", l, l.apply(&inputs));
-    let nn = NeuralNetwork::new(vec![l]);
+    let l1 = DenseLayer::new(vec![n1.clone(), n2]);
+    let l2 = DenseLayer::new(vec![n1]);
+    println!("Layer 1: {:?}\nApplication: {:?}", l1, l1.apply(&inputs));
+    println!("Layer 2: {:?}\nApplication: {:?}", l2, l2.apply(&inputs));
+    let nn = NeuralNetwork::new(vec![&l1, &l2]);
     println!(
         "Neural Network: {:?}\nApplication: {:?}",
         nn,
